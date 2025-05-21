@@ -1,12 +1,13 @@
 <?php
-
-use App\Http\Controllers\ActivityAreaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\{
     RegisteredUserController,
     AuthenticatedSessionController,
     PasswordResetLinkController
+};
+use App\Http\Controllers\{ActivityAreaController,
+    InstitutionController
 };
 
 Route::get('/user', function (Request $request) {
@@ -20,6 +21,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::apiResource('activity-area', ActivityAreaController::class);
+Route::apiResource('institution', InstitutionController::class);
 
 Route::prefix('list')->group(function () {
     Route::get('activity-area', [ActivityAreaController::class, 'list']);
