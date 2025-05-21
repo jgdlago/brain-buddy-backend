@@ -23,13 +23,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Builder::macro('getToApi', function (Request $request): LengthAwarePaginator|Collection
-        {
+        Builder::macro('getToApi', function (Request $request): LengthAwarePaginator|Collection {
             if ($request->has('no_pagination')) {
                 return $this->get();
             }
 
             return $this->paginate($request->get('per_page') ?? config('app.pagination.per_page'));
+        });
+
+        Collection::macro('list', function (string $keyField, string $labelField): Collection {
+            /** @var Collection $this */
+            return $this->map(function ($item) use ($keyField, $labelField) {
+                return [
+                    'key' => data_get($item, $keyField),
+                    'label' => data_get($item, $labelField),
+                ];
+            });
         });
     }
 }
