@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ActivityAreaRequest;
 use App\Http\Resources\ActivityAreaResource;
 use App\Models\ActivityArea;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 
+#[Group('Área de atividade')]
 class ActivityAreaController extends Controller
 {
     /**
