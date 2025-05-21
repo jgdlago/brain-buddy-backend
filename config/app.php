@@ -123,4 +123,9 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'pagination' => [
+        'per_page' => 15,
+        'min_per_page' => 10,
+        'max_per_page' => 100,
+    ]
 ];
