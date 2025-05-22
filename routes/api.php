@@ -8,7 +8,8 @@ use Laravel\Fortify\Http\Controllers\{
 };
 use App\Http\Controllers\{ActivityAreaController,
     InstitutionController,
-    GroupController
+    GroupController,
+    UserController
 };
 
 Route::get('/user', function (Request $request) {
@@ -30,3 +31,6 @@ Route::prefix('list')->group(function () {
     Route::get('institution', [InstitutionController::class, 'list']);
     Route::get('group', [GroupController::class, 'list']);
 });
+
+Route::post('user/{user}/institutions', [UserController::class, 'addToInstitution']);
+Route::delete('user/{user}/institution/{institution}', [UserController::class, 'addToInstitution']);
