@@ -23,17 +23,20 @@ Route::prefix('auth')->group(function () {
     Route::post('/forgot-password', [PasswordResetLinkController::class, 'store']);
 });
 
-Route::apiResource('activity-area', ActivityAreaController::class);
-Route::apiResource('institution', InstitutionController::class);
-Route::apiResource('group', GroupController::class);
-Route::apiResource('player', PlayerController::class);
 
-Route::prefix('list')->group(function () {
-    Route::get('activity-area', [ActivityAreaController::class, 'list']);
-    Route::get('institution', [InstitutionController::class, 'list']);
-    Route::get('group', [GroupController::class, 'list']);
-    Route::get('player', [PlayerController::class, 'list']);
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::apiResource('activity-area', ActivityAreaController::class);
+    Route::apiResource('institution', InstitutionController::class);
+    Route::apiResource('group', GroupController::class);
+    Route::apiResource('player', PlayerController::class);
+
+    Route::prefix('list')->group(function () {
+        Route::get('activity-area', [ActivityAreaController::class, 'list']);
+        Route::get('institution', [InstitutionController::class, 'list']);
+        Route::get('group', [GroupController::class, 'list']);
+        Route::get('player', [PlayerController::class, 'list']);
+    });
+
+    Route::post('user/{user}/institutions', [UserController::class, 'addToInstitution']);
+    Route::delete('user/{user}/institution/{institution}', [UserController::class, 'addToInstitution']);
 });
-
-Route::post('user/{user}/institutions', [UserController::class, 'addToInstitution']);
-Route::delete('user/{user}/institution/{institution}', [UserController::class, 'addToInstitution']);
