@@ -9,7 +9,8 @@ use Laravel\Fortify\Http\Controllers\{
 use App\Http\Controllers\{ActivityAreaController,
     InstitutionController,
     GroupController,
-    UserController
+    UserController,
+    PlayerController
 };
 
 Route::get('/user', function (Request $request) {
@@ -25,11 +26,13 @@ Route::prefix('auth')->group(function () {
 Route::apiResource('activity-area', ActivityAreaController::class);
 Route::apiResource('institution', InstitutionController::class);
 Route::apiResource('group', GroupController::class);
+Route::apiResource('player', PlayerController::class);
 
 Route::prefix('list')->group(function () {
     Route::get('activity-area', [ActivityAreaController::class, 'list']);
     Route::get('institution', [InstitutionController::class, 'list']);
     Route::get('group', [GroupController::class, 'list']);
+    Route::get('player', [PlayerController::class, 'list']);
 });
 
 Route::post('user/{user}/institutions', [UserController::class, 'addToInstitution']);
