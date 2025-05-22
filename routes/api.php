@@ -23,7 +23,6 @@ Route::prefix('auth')->group(function () {
     Route::post('/forgot-password', [PasswordResetLinkController::class, 'store']);
 });
 
-
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('activity-area', ActivityAreaController::class);
     Route::apiResource('institution', InstitutionController::class);
