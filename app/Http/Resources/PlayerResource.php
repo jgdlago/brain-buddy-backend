@@ -14,6 +14,15 @@ class PlayerResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $this->load('institution');
+
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'age' => $this->age,
+            'gender' => $this->gender->label(),
+            'character' => $this->character->label(),
+            'institution' => new SimplyInstitutionResource($this->institution)
+        ];
     }
 }

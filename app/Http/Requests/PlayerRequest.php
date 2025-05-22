@@ -2,18 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\CharacterEnum;
+use App\Enums\GenderEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PlayerRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return false;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +17,11 @@ class PlayerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string',
+            'gender' => ['required', Rule::enum(GenderEnum::class)],
+            'age' => 'required|integer',
+            'character' => ['required', Rule::enum(CharacterEnum::class)],
+            'institution' => 'required|integer|exists:App\Models\Institution,id',
         ];
     }
 }
