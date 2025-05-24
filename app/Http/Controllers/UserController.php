@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Institution;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -30,5 +31,15 @@ class UserController extends Controller
     {
         $user->institutions()->detach($institution);
         return new UserResource($user);
+    }
+
+    /**
+     * @return Response
+     */
+    public function list(): Response
+    {
+        return response(
+            User::all()->list('id', 'name')
+        );
     }
 }
