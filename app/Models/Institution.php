@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\CnpjCast;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -14,12 +15,21 @@ class Institution extends Model
     protected $fillable = [
         'name',
         'cnpj',
-        'activity_area_id'
+        'activity_area_id',
+        'owner_user_id',
     ];
 
     protected $casts = [
         'cnpj' => CnpjCast::class
     ];
+
+    /**
+     * @return BelongsTo
+     */
+    public function ownerUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_user_id');
+    }
 
     /**
      * @return HasOne
