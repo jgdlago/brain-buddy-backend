@@ -17,6 +17,7 @@ class InstitutionRequest extends FormRequest
             'name' => 'required|string',
             'cnpj' => 'required|string',
             'activity_area_id' => 'required|integer|exists:App\Models\ActivityArea,id',
+            'owner_user_id' => 'required|integer|exists:App\Models\User,id',
         ];
     }
 }

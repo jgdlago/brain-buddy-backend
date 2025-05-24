@@ -14,12 +14,13 @@ class InstitutionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $this->load('activityArea');
+        $this->load('activityArea', 'ownerUser');
 
         return [
             'name' => $this->name,
             'cnpj' => $this->cnpj,
-            'activity_area' => new ActivityAreaResource($this->activityArea)
+            'activity_area' => new ActivityAreaResource($this->activityArea),
+            'owner_user' => new SimplyUserResource($this->ownerUser)
         ];
     }
 }
