@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\{
@@ -13,9 +14,10 @@ use App\Http\Controllers\{ActivityAreaController,
     PlayerController
 };
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::get('/health-check', function () : Response
+{
+    return response('brain-buddy-backend is on', 200);
+});
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [RegisteredUserController::class, 'store']);
