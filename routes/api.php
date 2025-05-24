@@ -40,6 +40,6 @@ Route::middleware(HandlePrecognitiveRequests::class)->group(function () {
         });
 
         Route::post('user/{user}/institutions', [UserController::class, 'addToInstitution']);
-        Route::delete('user/{user}/institution/{institution}', [UserController::class, 'addToInstitution']);
+        Route::delete('user/{user}/institution/{institution}', [UserController::class, 'removeFromInstitution']);
     });
 });
