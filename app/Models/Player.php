@@ -16,7 +16,7 @@ class Player extends Model
         'gender',
         'age',
         'character',
-        'institution_id'
+        'group_id'
     ];
 
     protected $casts = [
@@ -27,8 +27,8 @@ class Player extends Model
     /**
      * @return BelongsTo
      */
-    public function institution(): BelongsTo
+    public function group(): BelongsTo
     {
-        return $this->belongsTo(Institution::class);
+        return $this->belongsTo(Group::class, 'group_id');
     }
 }

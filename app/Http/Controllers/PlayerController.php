@@ -6,6 +6,7 @@ use App\Http\Requests\PlayerRequest;
 use App\Http\Resources\PlayerResource;
 use App\Models\Player;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
@@ -18,9 +19,15 @@ class PlayerController extends Controller
      * @param Request $request
      * @return LengthAwarePaginator
      */
+    #[QueryParameter(name: 'group', type: 'int')]
     public function index(Request $request): LengthAwarePaginator
     {
-        return Player::getToApi($request);
+        $query = Player::query();
+        if ($request->has('group')) {
+            $query = $query->where('group_id', $request->get('group'));
+        }
+
+        return $query->getToApi($request);
     }
 
     /**
