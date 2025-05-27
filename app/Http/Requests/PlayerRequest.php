@@ -21,7 +21,7 @@ class PlayerRequest extends FormRequest
             'gender' => ['required', Rule::enum(GenderEnum::class)],
             'age' => 'required|integer',
             'character' => ['required', Rule::enum(CharacterEnum::class)],
-            'institution' => 'required|integer|exists:App\Models\Institution,id',
+            'group' => 'required|integer|exists:App\Models\Group,id',
         ];
     }
 }

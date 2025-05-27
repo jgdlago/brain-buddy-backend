@@ -21,7 +21,7 @@ class Player extends Model
 
     protected $casts = [
         'gender' => GenderEnum::class,
-        'age' => CharacterEnum::class
+        'character' => CharacterEnum::class
     ];
 
     /**
