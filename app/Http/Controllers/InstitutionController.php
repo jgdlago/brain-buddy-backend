@@ -7,6 +7,7 @@ use App\Http\Resources\InstitutionResource;
 use App\Models\Institution;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,11 +17,11 @@ class InstitutionController extends Controller
 {
     /**
      * @param Request $request
-     * @return LengthAwarePaginator
+     * @return AnonymousResourceCollection
      */
-    public function index(Request $request): LengthAwarePaginator
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return Institution::getToApi($request);
+        return InstitutionResource::collection(Institution::getToApi($request));
     }
 
     /**

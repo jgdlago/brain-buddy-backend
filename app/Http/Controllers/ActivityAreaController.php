@@ -17,11 +17,10 @@ class ActivityAreaController extends Controller
 {
     /**
      * @param Request $request
-     * @return LengthAwarePaginator
+     * @return AnonymousResourceCollection
      */
-    public function index(Request $request): LengthAwarePaginator
-    {
-        return ActivityArea::getToApi($request);
+    public function index(Request $request): AnonymousResourceCollection    {
+        return ActivityAreaResource::collection(ActivityArea::getToApi($request));
     }
 
     /**

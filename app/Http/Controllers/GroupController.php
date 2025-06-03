@@ -6,6 +6,7 @@ use App\Http\Requests\GroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,11 +17,11 @@ class GroupController extends Controller
 {
     /**
      * @param Request $request
-     * @return LengthAwarePaginator
+     * @return AnonymousResourceCollection
      */
-    public function index(Request $request): LengthAwarePaginator
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return Group::getToApi($request);
+        return GroupResource::collection(Group::getToApi($request));
     }
 
     /**
