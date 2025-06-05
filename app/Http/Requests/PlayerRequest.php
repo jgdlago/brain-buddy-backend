@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\CharacterEnum;
 use App\Enums\GenderEnum;
+use App\Enums\PerformanceFlagEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -22,6 +23,7 @@ class PlayerRequest extends FormRequest
             'age' => 'required|integer',
             'character' => ['required', Rule::enum(CharacterEnum::class)],
             'group_id' => 'required|integer|exists:App\Models\Group,id',
+            'performance_flag' => ['nullable', Rule::enum(PerformanceFlagEnum::class)],
         ];
     }
 }

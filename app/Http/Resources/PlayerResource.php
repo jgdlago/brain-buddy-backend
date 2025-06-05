@@ -22,7 +22,8 @@ class PlayerResource extends JsonResource
             'age' => $this->age,
             'gender' => $this->gender->label(),
             'character' => $this->character->label(),
-            'institution' => new SimplyInstitutionResource($this->institution)
+            'institution' => new SimplyInstitutionResource($this->institution),
+            'performance_flag' => $this->performance_flag,
         ];
     }
 }

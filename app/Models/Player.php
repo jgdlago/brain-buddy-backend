@@ -16,7 +16,8 @@ class Player extends Model
         'gender',
         'age',
         'character',
-        'group_id'
+        'group_id',
+        'performance_flag'
     ];
 
     protected $casts = [
