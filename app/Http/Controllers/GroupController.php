@@ -36,32 +36,32 @@ class GroupController extends Controller
     }
 
     /**
-     * @param Group $institution
+     * @param Group $group
      * @return JsonResource
      */
-    public function show(Group $institution): JsonResource
+    public function show(Group $group): JsonResource
     {
-        return new GroupResource($institution);
+        return new GroupResource($group);
     }
 
     /**
-     * @param Group $institution
+     * @param Group $group
      * @param GroupRequest $request
      * @return JsonResource
      */
-    public function update(Group $institution, GroupRequest $request): JsonResource
+    public function update(Group $group, GroupRequest $request): JsonResource
     {
-        $institution->update($request->validated());
-        return new GroupResource($institution);
+        $group->update($request->validated());
+        return new GroupResource($group);
     }
 
     /**
-     * @param Group $institution
+     * @param Group $group
      * @return Response
      */
-    public function destroy(Group $institution): Response
+    public function destroy(Group $group): Response
     {
-        $institution->delete();
+        $group->delete();
         return response()->noContent(204);
     }
 

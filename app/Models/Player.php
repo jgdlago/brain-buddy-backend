@@ -32,4 +32,12 @@ class Player extends Model
     {
         return $this->belongsTo(Group::class, 'group_id');
     }
+
+    /**
+     * @return BelongsTo
+     */
+    public function institution(): BelongsTo
+    {
+        return $this->belongsTo(Institution::class, 'institution_id');
+    }
 }
