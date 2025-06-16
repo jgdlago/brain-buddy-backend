@@ -38,6 +38,7 @@ Route::middleware(HandlePrecognitiveRequests::class)->group(function () {
             Route::get('group', [GroupController::class, 'list']);
             Route::get('player', [PlayerController::class, 'list']);
             Route::get('user', [UserController::class, 'list']);
+            Route::get('education-level', [GroupController::class, 'listEducationLevel']);
         });
 
         Route::post('user/{user}/institutions', [UserController::class, 'addToInstitution']);

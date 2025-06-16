@@ -12,7 +12,8 @@ class Group extends Model
     protected $fillable = [
         'name',
         'responsible_user_id',
-        'institution_id'
+        'institution_id',
+        'education_level',
     ];
 
     /**

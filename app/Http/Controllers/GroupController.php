@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\EducationLevelEnum;
 use App\Http\Requests\GroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
@@ -73,5 +74,13 @@ class GroupController extends Controller
         return response(
             Group::all()->list('id', 'name')
         );
+    }
+
+    /**
+     * @return Response
+     */
+    public function listEducationLevel(): Response
+    {
+        return response(EducationLevelEnum::list());
     }
 }
