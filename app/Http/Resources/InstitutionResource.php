@@ -17,6 +17,7 @@ class InstitutionResource extends JsonResource
         $this->load('activityArea', 'ownerUser');
 
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'cnpj' => $this->cnpj,
             'activity_area' => new ActivityAreaResource($this->activityArea),
