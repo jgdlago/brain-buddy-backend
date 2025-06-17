@@ -12,7 +12,7 @@ class HelpFlag extends Model
     protected $fillable = [
         'player_id',
         'trigger_date',
-        'level',
+        'level_id',
     ];
 
     /**
@@ -21,6 +21,14 @@ class HelpFlag extends Model
     public function player(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'player_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function level(): BelongsTo
+    {
+        return $this->belongsTo(Level::class, 'level_id');
     }
 }
 
