@@ -6,6 +6,8 @@ use App\Enums\CharacterEnum;
 use App\Enums\GenderEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use PHPUnit\TextUI\Help;
 
 class Player extends Model
 {
@@ -39,5 +41,13 @@ class Player extends Model
     public function institution(): BelongsTo
     {
         return $this->belongsTo(Institution::class, 'institution_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function helpFlags(): HasMany
+    {
+        return $this->hasMany(HelpFlag::class, 'player_id');
     }
 }

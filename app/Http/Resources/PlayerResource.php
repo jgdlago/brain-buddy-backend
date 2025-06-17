@@ -14,7 +14,7 @@ class PlayerResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $this->load('institution');
+        $this->load('institution', 'helpFlags');
 
         return [
             'id' => $this->id,
@@ -24,6 +24,7 @@ class PlayerResource extends JsonResource
             'character' => $this->character->label(),
             'institution' => new SimplyInstitutionResource($this->institution),
             'performance_flag' => $this->performance_flag,
+            'help_flags' => $this->helpFlags->orderBy('trigger_date')->get()
         ];
     }
 }
