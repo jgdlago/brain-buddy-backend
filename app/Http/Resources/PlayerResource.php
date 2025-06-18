@@ -24,7 +24,7 @@ class PlayerResource extends JsonResource
             'character' => $this->character->label(),
             'institution' => new SimplyInstitutionResource($this->institution),
             'performance_flag' => $this->performance_flag,
-            'help_flags' => $this->helpFlags->orderBy('trigger_date')->get()
+            'help_flags' => $this->helpFlags->sortBy('trigger_date')
         ];
     }
 }

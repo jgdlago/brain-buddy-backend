@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class HelpFlag extends Model
 {
+    protected $table = 'player_help_flags';
+
     public $timestamps = false;
 
     protected $fillable = [
