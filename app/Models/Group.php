@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Group extends Model
@@ -17,6 +18,14 @@ class Group extends Model
         'education_level',
         'code',
     ];
+
+    /**
+     * @return HasMany
+     */
+    public function players(): HasMany
+    {
+        return $this->hasMany(Player::class, 'group_id');
+    }
 
     /**
      * @return BelongsTo

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PlayerRequest;
 use App\Http\Resources\PlayerResource;
+use App\Models\Group;
 use App\Models\Player;
-use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -37,8 +37,10 @@ class PlayerController extends Controller
      */
     public function store(PlayerRequest $request): JsonResource
     {
+        $group = Group::where('code', $request->get('group_code'))->firstOrFail();
+
         return new PlayerResource(
-            Player::create($request->validated())
+            $group->players()->create($request->validated())
         );
     }
 
