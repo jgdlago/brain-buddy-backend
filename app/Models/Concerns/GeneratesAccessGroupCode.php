@@ -12,8 +12,8 @@ trait GeneratesAccessGroupCode
     protected static function bootGeneratesAccessGroupCode(): void
     {
         static::creating(function ($model) {
-            if (empty($model->code)) {
-                $model->code = $model->generateUniqueCode();
+            if (empty($model->access_code)) {
+                $model->access_code = $model->generateUniqueCode();
             }
         });
     }
@@ -49,6 +49,6 @@ trait GeneratesAccessGroupCode
      */
     private static function codeExists(string $code): bool
     {
-        return static::where('code', $code)->exists();
+        return static::where('access_code', $code)->exists();
     }
 }

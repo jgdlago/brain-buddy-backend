@@ -18,7 +18,7 @@ class Group extends Model
         'responsible_user_id',
         'institution_id',
         'education_level',
-        'code',
+        'access_code',
     ];
 
     /**
