@@ -12,8 +12,9 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Dedoc\Scramble\Attributes\Group as ScrambleGroup;
 
-#[Group('Players')]
+#[ScrambleGroup('Players')]
 class PlayerController extends Controller
 {
     /**
