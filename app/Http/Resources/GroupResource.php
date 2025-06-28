@@ -20,7 +20,8 @@ class GroupResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'responsible_user' => new SimplyUserResource($this->responsibleUser),
-            'institution' => new SimplyInstitutionResource($this->institution)
+            'institution' => new SimplyInstitutionResource($this->institution),
+            'access_code' => $this->access_code
         ];
     }
 }

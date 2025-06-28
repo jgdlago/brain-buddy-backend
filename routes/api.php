@@ -30,7 +30,9 @@ Route::middleware(HandlePrecognitiveRequests::class)->group(function () {
         Route::apiResource('activity-area', ActivityAreaController::class);
         Route::apiResource('institution', InstitutionController::class);
         Route::apiResource('group', GroupController::class);
-        Route::apiResource('player', PlayerController::class);
+        Route::apiResource('player', PlayerController::class)->except('store');
+
+        Route::post('{group}/player', [PlayerController::class, 'store']);
 
         Route::prefix('list')->group(function () {
             Route::get('activity-area', [ActivityAreaController::class, 'list']);
