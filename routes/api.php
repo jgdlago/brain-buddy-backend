@@ -33,6 +33,7 @@ Route::middleware(HandlePrecognitiveRequests::class)->group(function () {
         Route::apiResource('player', PlayerController::class)->except('store');
 
         Route::post('{group}/player', [PlayerController::class, 'store']);
+        Route::get('group/report', [GroupController::class, 'report']);
 
         Route::prefix('list')->group(function () {
             Route::get('activity-area', [ActivityAreaController::class, 'list']);
