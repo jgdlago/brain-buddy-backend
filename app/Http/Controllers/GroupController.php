@@ -81,6 +81,7 @@ class GroupController extends Controller
      * @param Request $request
      * @return Collection
      */
+    #[QueryParameter('group', type: 'array')]
     #[QueryParameter('player', type: 'array')]
     #[QueryParameter('gender', type: GenderEnum::class)]
     #[QueryParameter('education_level', type: EducationLevelEnum::class)]
