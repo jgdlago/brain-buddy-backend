@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
@@ -14,8 +15,7 @@ use App\Http\Controllers\{ActivityAreaController,
     PlayerController
 };
 
-Route::get('/health-check', function () : Response
-{
+Route::get('/health-check', function () : Response {
     return response('brain-buddy-backend is on', 200);
 });
 
@@ -25,26 +25,27 @@ Route::middleware(HandlePrecognitiveRequests::class)->group(function () {
         Route::post('/login', [AuthenticatedSessionController::class, 'store']);
         Route::post('/forgot-password', [PasswordResetLinkController::class, 'store']);
     });
+});
 
-    Route::middleware(['auth:sanctum'])->group(function () {
-        Route::apiResource('activity-area', ActivityAreaController::class);
-        Route::apiResource('institution', InstitutionController::class);
-        Route::apiResource('group', GroupController::class);
-        Route::apiResource('player', PlayerController::class)->except('store');
+// Grupo protegido pelo token do app
+Route::middleware(['app.token'])->group(function () {
+    Route::apiResource('activity-area', ActivityAreaController::class);
+    Route::apiResource('institution', InstitutionController::class);
+    Route::apiResource('group', GroupController::class);
+    Route::apiResource('player', PlayerController::class)->except('store');
 
-        Route::post('{groupAccessCode}/player', [PlayerController::class, 'store']);
-        Route::get('group/report', [GroupController::class, 'report']);
+    Route::post('{groupAccessCode}/player', [PlayerController::class, 'store']);
+    Route::get('group/report', [GroupController::class, 'report']);
 
-        Route::prefix('list')->group(function () {
-            Route::get('activity-area', [ActivityAreaController::class, 'list']);
-            Route::get('institution', [InstitutionController::class, 'list']);
-            Route::get('group', [GroupController::class, 'list']);
-            Route::get('player', [PlayerController::class, 'list']);
-            Route::get('user', [UserController::class, 'list']);
-            Route::get('education-level', [GroupController::class, 'listEducationLevel']);
-        });
-
-        Route::post('user/{user}/institutions', [UserController::class, 'addToInstitution']);
-        Route::delete('user/{user}/institution/{institution}', [UserController::class, 'removeFromInstitution']);
+    Route::prefix('list')->group(function () {
+        Route::get('activity-area', [ActivityAreaController::class, 'list']);
+        Route::get('institution', [InstitutionController::class, 'list']);
+        Route::get('group', [GroupController::class, 'list']);
+        Route::get('player', [PlayerController::class, 'list']);
+        Route::get('user', [UserController::class, 'list']);
+        Route::get('education-level', [GroupController::class, 'listEducationLevel']);
     });
+
+    Route::post('user/{user}/institutions', [UserController::class, 'addToInstitution']);
+    Route::delete('user/{user}/institution/{institution}', [UserController::class, 'removeFromInstitution']);
 });

@@ -127,5 +127,13 @@ return [
         'per_page' => 15,
         'min_per_page' => 10,
         'max_per_page' => 100,
-    ]
+    ],
+
+    'default_users' => [
+        'game_sync' => [
+            'name' => env('APP_GAME_SYNC_NAME', 'Brain Buddy Game Sync'),
+            'email' => env('APP_GAME_SYNC_EMAIL', 'brainBuddyGameSync@example.com'),
+            'password' => env('APP_GAME_SYNC_PASSWORD', 'password'),
+        ]
+    ],
 ];
