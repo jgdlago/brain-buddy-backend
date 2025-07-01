@@ -33,12 +33,13 @@ class PlayerController extends Controller
     }
 
     /**
-     * @param Group $group
+     * @param string $groupAccessCode
      * @param PlayerRequest $request
      * @return JsonResource
      */
-    public function store(Group $group, PlayerRequest $request): JsonResource
+    public function store(string $groupAccessCode, PlayerRequest $request): JsonResource
     {
+        $group = Group::where('access_code', $groupAccessCode)->firstOrFail();
         return new PlayerResource(
             $group->players()->create($request->validated())
         );
