@@ -28,13 +28,11 @@ Route::middleware(HandlePrecognitiveRequests::class)->group(function () {
 });
 
 // Grupo protegido pelo token do app
-Route::middleware(['app.token'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('activity-area', ActivityAreaController::class);
     Route::apiResource('institution', InstitutionController::class);
     Route::apiResource('group', GroupController::class);
     Route::apiResource('player', PlayerController::class)->except('store');
-
-    Route::post('{groupAccessCode}/player', [PlayerController::class, 'store']);
     Route::get('group/report', [GroupController::class, 'report']);
 
     Route::prefix('list')->group(function () {
@@ -48,4 +46,8 @@ Route::middleware(['app.token'])->group(function () {
 
     Route::post('user/{user}/institutions', [UserController::class, 'addToInstitution']);
     Route::delete('user/{user}/institution/{institution}', [UserController::class, 'removeFromInstitution']);
+});
+
+Route::middleware('app.token')->group(function () {
+    Route::post('{groupAccessCode}/player', [PlayerController::class, 'store']);
 });
