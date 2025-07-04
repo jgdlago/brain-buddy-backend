@@ -27,7 +27,6 @@ Route::middleware(HandlePrecognitiveRequests::class)->group(function () {
     });
 });
 
-// Grupo protegido pelo token do app
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('activity-area', ActivityAreaController::class);
     Route::apiResource('institution', InstitutionController::class);
