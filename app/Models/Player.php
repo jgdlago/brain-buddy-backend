@@ -7,6 +7,7 @@ use App\Enums\GenderEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Prompts\Progress;
 use PHPUnit\TextUI\Help;
 
 class Player extends Model
@@ -41,5 +42,10 @@ class Player extends Model
     public function helpFlags(): HasMany
     {
         return $this->hasMany(HelpFlag::class, 'player_id');
+    }
+
+    public function progresses(): hasMany
+    {
+        return $this->hasMany(PlayerProgress::class, 'player_id');
     }
 }

@@ -14,7 +14,7 @@ class PlayerResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $this->load('group', 'helpFlags');
+        $this->load('group', 'helpFlags', 'progresses');
 
         return [
             'id' => $this->id,
@@ -24,7 +24,8 @@ class PlayerResource extends JsonResource
             'character' => $this->character->label(),
             'grouop' => new GroupResource($this->group),
             'performance_flag' => $this->performance_flag,
-            'help_flags' => $this->helpFlags->sortBy('trigger_date')
+            'help_flags' => $this->helpFlags->sortBy('trigger_date'),
+            'progresses' => PlayerProgressResource::collection($this->progresses),
         ];
     }
 }
