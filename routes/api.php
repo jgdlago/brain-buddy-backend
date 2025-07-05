@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\HelpFlag;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
@@ -34,6 +35,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('institution', InstitutionController::class);
     Route::apiResource('group', GroupController::class);
     Route::apiResource('player', PlayerController::class)->except('store');
+    Route::apiResource('help-flag', HelpFlag::class)->except('store');
 
     Route::prefix('list')->group(function () {
         Route::get('activity-area', [ActivityAreaController::class, 'list']);
@@ -50,4 +52,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::middleware('app.token')->group(function () {
     Route::post('{groupAccessCode}/player', [PlayerController::class, 'store']);
+    Route::post('help-flag', [PlayerController::class, 'store']);
 });
