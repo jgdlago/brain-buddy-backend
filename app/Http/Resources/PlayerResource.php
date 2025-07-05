@@ -22,7 +22,7 @@ class PlayerResource extends JsonResource
             'age' => $this->age,
             'gender' => $this->gender->label(),
             'character' => $this->character->label(),
-            'grouop' => new GroupResource($this->group),
+            'group' => new GroupResource($this->group),
             'performance_flag' => $this->performance_flag,
             'help_flags' => $this->helpFlags->sortBy('trigger_date'),
             'progresses' => PlayerProgressResource::collection($this->progresses),
