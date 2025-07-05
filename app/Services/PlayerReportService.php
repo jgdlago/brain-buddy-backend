@@ -51,7 +51,7 @@ class PlayerReportService
         }
 
         if ($educationLevel = $this->request->get('education_level')) {
-            $this->playerBuilder->whereHas('group.education_level', function (Builder $query) use ($educationLevel) {
+            $this->playerBuilder->whereHas('group', function (Builder $query) use ($educationLevel) {
                 $query->whereIn('education_level', $educationLevel);
             });
         }
