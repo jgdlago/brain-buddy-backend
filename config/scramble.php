@@ -29,7 +29,7 @@ return [
         /*
          * Description rendered on the home page of the API documentation (`/docs/api`).
          */
-        'description' => '',
+        'description' => file_get_contents(base_path('README.md')),
     ],
 
     /*
@@ -39,7 +39,7 @@ return [
         /*
          * Define the title of the documentation's website. App name is used when this config is `null`.
          */
-        'title' => 'Brain Buddy Backend',
+        'title' => 'API Documentation',
 
         /*
          * Define the theme of the documentation. Available options are `light` and `dark`.
