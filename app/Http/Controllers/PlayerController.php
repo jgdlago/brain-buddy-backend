@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CharacterEnum;
+use App\Enums\EducationLevelEnum;
+use App\Enums\GenderEnum;
 use App\Http\Requests\PlayerRequest;
 use App\Http\Resources\PlayerResource;
 use App\Models\Group;
 use App\Models\Player;
+use App\Services\PlayerReportService;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -17,6 +21,12 @@ use Dedoc\Scramble\Attributes\Group as ScrambleGroup;
 #[ScrambleGroup('Players')]
 class PlayerController extends Controller
 {
+    protected PlayerReportService $reportService;
+    public function __construct(PlayerReportService $reportService)
+    {
+        $this->reportService = $reportService;
+    }
+
     /**
      * @param Request $request
      * @return AnonymousResourceCollection
@@ -82,6 +92,25 @@ class PlayerController extends Controller
     {
         return response(
             Player::all()->list('id', 'name')
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResource
+     */
+    #[QueryParameter('group', type: 'array')]
+    #[QueryParameter('player', type: 'array')]
+    #[QueryParameter('gender', type: GenderEnum::class)]
+    #[QueryParameter('education_level', type: EducationLevelEnum::class)]
+    #[QueryParameter('activity_area', type: 'array')]
+    #[QueryParameter('character', type: CharacterEnum::class)]
+    #[QueryParameter('age_min', type: 'int')]
+    #[QueryParameter('age_max', type: 'int')]
+    public function report(Request $request): JsonResource
+    {
+        return PlayerResource::collection(
+            $this->reportService->build($request)->getToApi($request)
         );
     }
 }
