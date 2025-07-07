@@ -16,6 +16,7 @@ class PlayerProgress extends Model
         'total_attempts',
         'completed',
         'completion_date',
+        'level_id'
     ];
 
     protected $casts = [
@@ -28,5 +29,13 @@ class PlayerProgress extends Model
     public function player(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'player_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function level(): BelongsTo
+    {
+        return $this->belongsTo(Level::class, 'level_id');
     }
 }
