@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CharacterEnum;
 use App\Enums\GenderEnum;
+use App\Enums\PerformanceFlagEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -25,7 +26,8 @@ class Player extends Model
 
     protected $casts = [
         'gender' => GenderEnum::class,
-        'character' => CharacterEnum::class
+        'character' => CharacterEnum::class,
+        'performance_flag' => PerformanceFlagEnum::class,
     ];
 
     /**

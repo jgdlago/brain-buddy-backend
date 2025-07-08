@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Player;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -125,42 +126,41 @@ class PlayerProgressServiceReport
      */
     protected function calculatePerPlayer(QueryBuilder $baseQuery): SupportCollection
     {
-        return $baseQuery->clone()
-            ->groupBy(
-                'players.id',
-                'players.name',
-                'players.age',
-                'players.character',
-                'players.performance_flag'
-            )
+        $rows = $baseQuery->clone()
+            ->groupBy('players.id')
             ->selectRaw('
                 players.id,
-                players.name,
-                players.age,
-                players.character,
-                players.performance_flag,
                 COALESCE(SUM(player_progress.total_correct), 0) as total_correct,
                 COALESCE(SUM(player_progress.total_wrong), 0) as total_wrong,
                 COALESCE(SUM(player_progress.total_attempts), 0) as total_attempts,
                 SUM(CASE WHEN player_progress.completed = true THEN 1 ELSE 0 END) as total_levels_completed,
                 COUNT(player_help_flags.id) as total_help_flags
             ')
+            ->get();
+
+        $players = Player::whereIn('id', $rows->pluck('id')->all())
             ->get()
-            ->map(function ($player) {
-                return [
-                    'id' => $player->id,
-                    'name' => $player->name,
-                    'age' => $player->age,
-                    'character' => $player->character,
-                    'performance_flag' => $player->performance_flag,
-                    'totals' => [
-                        'correct' => (int) $player->total_correct,
-                        'wrong' => (int) $player->total_wrong,
-                        'attempts' => (int) $player->total_attempts,
-                        'levels_completed' => (int) $player->total_levels_completed,
-                        'help_flags' => (int) $player->total_help_flags,
-                    ]
-                ];
-            });
+            ->keyBy('id');
+
+        return $rows->map(function ($row) use ($players) {
+            /** @var \App\Models\Player $model */
+            $model = $players->get($row->id);
+
+            return [
+                'id'                => $model->id,
+                'name'              => $model->name,
+                'gender'            => $model->gender?->label(),
+                'character'         => $model->character?->label(),
+                'performance_flag'  => $model->performance_flag?->label(),
+                'age'               => $model->age,
+                'totals'            => [
+                    'correct'           => (int) $row->total_correct,
+                    'wrong'             => (int) $row->total_wrong,
+                    'attempts'          => (int) $row->total_attempts,
+                    'levels_completed'  => (int) $row->total_levels_completed,
+                    'help_flags'        => (int) $row->total_help_flags,
+                ],
+            ];
+        });
     }
 }
