@@ -46,7 +46,7 @@ class PlayerProgressExport implements
         $data[] = [
             'Nome', 'Idade', 'Personagem', 'Performance Flag',
             'Respostas Corretas', 'Respostas Erradas', 'Tentativas',
-            'Níveis Completados', 'Ajudas Utilizadas'
+            'Níveis Completados', 'Pedidos de ajuda'
         ];
 
         foreach ($this->reportData['players'] as $player) {
