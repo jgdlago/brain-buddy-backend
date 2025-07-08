@@ -33,7 +33,7 @@ class PlayerProgressExport implements
         $data = [];
 
         $data[] = [
-            'TOTAIS GERAIS',
+            'TOTAL',
             $this->reportData['totals']['total_correct'],
             $this->reportData['totals']['total_wrong'],
             $this->reportData['totals']['total_attempts'],
@@ -53,6 +53,7 @@ class PlayerProgressExport implements
             $data[] = [
                 $player['name'],
                 $player['age'],
+                $player['gender'],
                 $player['character'],
                 $player['performance_flag'],
                 $player['totals']['correct'],
