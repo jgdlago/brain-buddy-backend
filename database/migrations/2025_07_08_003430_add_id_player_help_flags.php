@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('player_progress', function (Blueprint $table) {
-            $table->foreignId('level_id')
-                ->nullable()
-                ->constrained('levels');
+        Schema::table('player_help_flags', function (Blueprint $table) {
+            $table->id();
         });
     }
 
@@ -23,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('player_progress', function (Blueprint $table) {
-            $table->dropColumn('level_id');
+        Schema::table('player_help_flags', function (Blueprint $table) {
+            $table->dropColumn('id');
         });
     }
 };

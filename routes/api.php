@@ -12,9 +12,9 @@ use Laravel\Fortify\Http\Controllers\{
 use App\Http\Controllers\{ActivityAreaController,
     InstitutionController,
     GroupController,
+    PlayerProgressController,
     UserController,
-    PlayerController
-};
+    PlayerController};
 
 Route::get('/health-check', function () : Response {
     return response('brain-buddy-backend is on', 200);
@@ -29,7 +29,7 @@ Route::middleware(HandlePrecognitiveRequests::class)->group(function () {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('player/report', [PlayerController::class, 'report']);
+    Route::get('player-progress/report', [PlayerProgressController::class, 'index']);
 
     Route::apiResource('activity-area', ActivityAreaController::class);
     Route::apiResource('institution', InstitutionController::class);
