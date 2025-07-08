@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\PlayerProgress;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,9 @@ class PlayerProgressServiceReport
         $this->progressBuilder = PlayerProgress::query();
     }
 
+    /**
+     * @return int[]
+     */
     public function getGraphData(): array
     {
         $this->applyBaseConditions();
@@ -27,6 +31,9 @@ class PlayerProgressServiceReport
         return $this->calculateAggregates();
     }
 
+    /**
+     * @return void
+     */
     protected function applyBaseConditions(): void
     {
         $this->progressBuilder->whereHas('player.group', function (Builder $query) {
@@ -34,6 +41,9 @@ class PlayerProgressServiceReport
         });
     }
 
+    /**
+     * @return void
+     */
     protected function applyFilters(): void
     {
         if ($players = $this->request->get('player')) {
@@ -78,9 +88,11 @@ class PlayerProgressServiceReport
         }
     }
 
+    /**
+     * @return int[]
+     */
     protected function calculateAggregates(): array
     {
-        // Construir query otimizada com JOINs
         $query = $this->buildOptimizedQuery();
 
         $result = $query->first();
@@ -94,7 +106,10 @@ class PlayerProgressServiceReport
         ];
     }
 
-    protected function buildOptimizedQuery()
+    /**
+     * @return QueryBuilder
+     */
+    protected function buildOptimizedQuery(): QueryBuilder
     {
         return DB::table('player_progress')
             ->join('players', 'player_progress.player_id', '=', 'players.id')
