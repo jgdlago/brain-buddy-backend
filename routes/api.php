@@ -30,6 +30,7 @@ Route::middleware(HandlePrecognitiveRequests::class)->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('player-progress/report', [PlayerProgressController::class, 'index']);
+    Route::get('player-progress/report-excel', [PlayerProgressController::class, 'exportToExcel']);
 
     Route::apiResource('activity-area', ActivityAreaController::class);
     Route::apiResource('institution', InstitutionController::class);
