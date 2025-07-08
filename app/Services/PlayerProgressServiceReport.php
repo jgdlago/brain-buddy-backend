@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Player;
 use App\Models\PlayerProgress;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -28,7 +29,13 @@ class PlayerProgressServiceReport
         $this->applyBaseConditions();
         $this->applyFilters();
 
-        return $this->calculateAggregates();
+        $aggregates = $this->calculateAggregates();
+
+        $players = $this->getIncludedPlayers();
+
+        return array_merge($aggregates, [
+            'players' => $players->toArray()
+        ]);
     }
 
     /**
@@ -151,5 +158,30 @@ class PlayerProgressServiceReport
                 COUNT(DISTINCT CASE WHEN player_progress.completed = true THEN player_progress.player_id END) as total_completed,
                 COUNT(DISTINCT player_help_flags.id) as total_help_flags
             ');
+    }
+
+    protected function getIncludedPlayers()
+    {
+        return Player::query()
+            ->whereHas('progresses', function (Builder $query) {
+                $query->whereHas('player.group', function (Builder $groupQuery) {
+                    $groupQuery->where('responsible_user_id', Auth::id());
+                });
+                $this->replicateFilters($query);
+            })
+            ->select('id', 'name', 'age', 'character', 'performance_flag')
+            ->distinct()
+            ->get();
+    }
+
+    protected function replicateFilters(Builder $query): void
+    {
+        if ($players = $this->request->get('player')) {
+            $query->whereIn('player_id', (array)$players);
+        }
+
+        if ($gender = $this->request->get('gender')) {
+            $query->whereHas('player', fn($q) => $q->where('gender', $gender));
+        }
     }
 }
