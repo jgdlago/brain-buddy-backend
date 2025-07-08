@@ -71,7 +71,7 @@ class InstitutionController extends Controller
     public function list(): Response
     {
         return response(
-            Institution::all()->list('id', 'name')
+            Institution::all()->sortBy('name')->list('id', 'name')
         );
     }
 }

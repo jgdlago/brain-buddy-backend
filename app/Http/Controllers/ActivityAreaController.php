@@ -70,7 +70,7 @@ class ActivityAreaController extends Controller
     public function list(): Response
     {
         return response(
-            ActivityArea::all()->list('id', 'name')
+            ActivityArea::all()->sortBy('name')->list('id', 'name')
         );
     }
 }
