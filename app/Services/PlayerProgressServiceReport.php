@@ -2,107 +2,113 @@
 
 namespace App\Services;
 
-use App\Models\Player;
-use App\Models\PlayerProgress;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection as SupportCollection;
 
 class PlayerProgressServiceReport
 {
-    protected Builder $progressBuilder;
     protected Request $request;
 
     public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->progressBuilder = PlayerProgress::query();
     }
 
     /**
-     * @return int[]
+     * @return array
      */
     public function getGraphData(): array
     {
-        $this->applyBaseConditions();
-        $this->applyFilters();
+        $baseQuery = $this->buildBaseQuery();
 
-        $aggregates = $this->calculateAggregates();
+        // Calcula totais gerais
+        $totals = $this->calculateAggregates($baseQuery);
 
-        $players = $this->getIncludedPlayers();
+        // Calcula totais individuais por player
+        $players = $this->calculatePerPlayer($baseQuery);
 
-        return array_merge($aggregates, [
-            'players' => $players->toArray()
-        ]);
+        return [
+            'totals' => $totals,
+            'players' => $players
+        ];
     }
 
     /**
-     * @return void
+     * @return QueryBuilder
      */
-    protected function applyBaseConditions(): void
+    protected function buildBaseQuery(): QueryBuilder
     {
-        $this->progressBuilder->whereHas('player.group', function (Builder $query) {
-            $query->where('responsible_user_id', Auth::id());
-        });
+        $query = DB::table('player_progress')
+            ->join('players', 'player_progress.player_id', '=', 'players.id')
+            ->join('groups', 'players.group_id', '=', 'groups.id')
+            ->leftJoin('player_help_flags', function($join) {
+                $join->on('player_help_flags.player_id', '=', 'player_progress.player_id')
+                    ->on('player_help_flags.level_id', '=', 'player_progress.level_id');
+            })
+            ->where('groups.responsible_user_id', Auth::id());
+
+        $this->applyFiltersToQuery($query);
+
+        return $query;
     }
 
     /**
+     * @param QueryBuilder $query
      * @return void
      */
-    protected function applyFilters(): void
+    protected function applyFiltersToQuery(QueryBuilder $query): void
     {
         if ($players = $this->request->get('player')) {
-            $this->progressBuilder->whereIn('player_id', (array)$players);
+            $query->whereIn('player_progress.player_id', (array)$players);
         }
 
         if ($gender = $this->request->get('gender')) {
-            $this->progressBuilder->whereHas('player', function (Builder $query) use ($gender) {
-                $query->where('gender', $gender);
-            });
+            $query->where('players.gender', $gender);
         }
 
         if ($educationLevel = $this->request->get('education_level')) {
-            $this->progressBuilder->whereHas('player.group', function (Builder $query) use ($educationLevel) {
-                $query->whereIn('education_level', (array)$educationLevel);
-            });
+            $query->whereIn('groups.education_level', (array)$educationLevel);
         }
 
         if ($activityArea = $this->request->get('activity_area')) {
-            $this->progressBuilder->whereHas('player.group.institution', function (Builder $query) use ($activityArea) {
-                $query->whereIn('activity_area_id', (array)$activityArea);
-            });
+            $query->join('institutions', 'groups.institution_id', '=', 'institutions.id')
+                ->whereIn('institutions.activity_area_id', (array)$activityArea);
         }
 
         if ($character = $this->request->get('character')) {
-            $this->progressBuilder->whereHas('player', function (Builder $query) use ($character) {
-                $query->where('character', $character);
-            });
+            $query->where('players.character', $character);
         }
 
         if ($this->request->filled('age_min') || $this->request->filled('age_max')) {
-            $this->progressBuilder->whereHas('player', function (Builder $query) {
-                $query->whereBetween('age', [
-                    $this->request->input('age_min', 6),
-                    $this->request->input('age_max', 12)
-                ]);
-            });
+            $query->whereBetween('players.age', [
+                $this->request->input('age_min', 6),
+                $this->request->input('age_max', 12)
+            ]);
         }
 
         if ($level = $this->request->get('level')) {
-            $this->progressBuilder->whereIn('level_id', (array)$level);
+            $query->whereIn('player_progress.level_id', (array)$level);
         }
     }
 
     /**
+     * @param QueryBuilder $baseQuery
      * @return int[]
      */
-    protected function calculateAggregates(): array
+    protected function calculateAggregates(QueryBuilder $baseQuery): array
     {
-        $query = $this->buildOptimizedQuery();
-
-        $result = $query->first();
+        $result = $baseQuery->clone()
+            ->selectRaw('
+                COALESCE(SUM(player_progress.total_correct), 0) as total_correct,
+                COALESCE(SUM(player_progress.total_wrong), 0) as total_wrong,
+                COALESCE(SUM(player_progress.total_attempts), 0) as total_attempts,
+                COUNT(DISTINCT CASE WHEN player_progress.completed = true THEN player_progress.player_id END) as total_completed,
+                COUNT(DISTINCT player_help_flags.id) as total_help_flags
+            ')
+            ->first();
 
         return [
             'total_correct' => (int) ($result->total_correct ?? 0),
@@ -114,74 +120,47 @@ class PlayerProgressServiceReport
     }
 
     /**
-     * @return QueryBuilder
+     * @param QueryBuilder $baseQuery
+     * @return SupportCollection
      */
-    protected function buildOptimizedQuery(): QueryBuilder
+    protected function calculatePerPlayer(QueryBuilder $baseQuery): SupportCollection
     {
-        return DB::table('player_progress')
-            ->join('players', 'player_progress.player_id', '=', 'players.id')
-            ->join('groups', 'players.group_id', '=', 'groups.id')
-            ->leftJoin('player_help_flags', function($join) {
-                $join->on('player_help_flags.player_id', '=', 'player_progress.player_id')
-                    ->on('player_help_flags.level_id', '=', 'player_progress.level_id');
-            })
-            ->where('groups.responsible_user_id', Auth::id())
-            ->when($this->request->get('player'), function ($query, $players) {
-                $query->whereIn('player_progress.player_id', (array)$players);
-            })
-            ->when($this->request->get('gender'), function ($query, $gender) {
-                $query->where('players.gender', $gender);
-            })
-            ->when($this->request->get('education_level'), function ($query, $educationLevel) {
-                $query->whereIn('groups.education_level', (array)$educationLevel);
-            })
-            ->when($this->request->get('activity_area'), function ($query, $activityArea) {
-                $query->join('institutions', 'groups.institution_id', '=', 'institutions.id')
-                    ->whereIn('institutions.activity_area_id', (array)$activityArea);
-            })
-            ->when($this->request->get('character'), function ($query, $character) {
-                $query->where('players.character', $character);
-            })
-            ->when($this->request->filled('age_min') || $this->request->filled('age_max'), function ($query) {
-                $query->whereBetween('players.age', [
-                    $this->request->input('age_min', 6),
-                    $this->request->input('age_max', 12)
-                ]);
-            })
-            ->when($this->request->get('level'), function ($query, $level) {
-                $query->whereIn('player_progress.level_id', (array)$level);
-            })
+        return $baseQuery->clone()
+            ->groupBy(
+                'players.id',
+                'players.name',
+                'players.age',
+                'players.character',
+                'players.performance_flag'
+            )
             ->selectRaw('
+                players.id,
+                players.name,
+                players.age,
+                players.character,
+                players.performance_flag,
                 COALESCE(SUM(player_progress.total_correct), 0) as total_correct,
                 COALESCE(SUM(player_progress.total_wrong), 0) as total_wrong,
                 COALESCE(SUM(player_progress.total_attempts), 0) as total_attempts,
-                COUNT(DISTINCT CASE WHEN player_progress.completed = true THEN player_progress.player_id END) as total_completed,
-                COUNT(DISTINCT player_help_flags.id) as total_help_flags
-            ');
-    }
-
-    protected function getIncludedPlayers()
-    {
-        return Player::query()
-            ->whereHas('progresses', function (Builder $query) {
-                $query->whereHas('player.group', function (Builder $groupQuery) {
-                    $groupQuery->where('responsible_user_id', Auth::id());
-                });
-                $this->replicateFilters($query);
-            })
-            ->select('id', 'name', 'age', 'character', 'performance_flag')
-            ->distinct()
-            ->get();
-    }
-
-    protected function replicateFilters(Builder $query): void
-    {
-        if ($players = $this->request->get('player')) {
-            $query->whereIn('player_id', (array)$players);
-        }
-
-        if ($gender = $this->request->get('gender')) {
-            $query->whereHas('player', fn($q) => $q->where('gender', $gender));
-        }
+                SUM(CASE WHEN player_progress.completed = true THEN 1 ELSE 0 END) as total_levels_completed,
+                COUNT(player_help_flags.id) as total_help_flags
+            ')
+            ->get()
+            ->map(function ($player) {
+                return [
+                    'id' => $player->id,
+                    'name' => $player->name,
+                    'age' => $player->age,
+                    'character' => $player->character,
+                    'performance_flag' => $player->performance_flag,
+                    'totals' => [
+                        'correct' => (int) $player->total_correct,
+                        'wrong' => (int) $player->total_wrong,
+                        'attempts' => (int) $player->total_attempts,
+                        'levels_completed' => (int) $player->total_levels_completed,
+                        'help_flags' => (int) $player->total_help_flags,
+                    ]
+                ];
+            });
     }
 }
