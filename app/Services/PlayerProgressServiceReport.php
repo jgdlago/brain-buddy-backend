@@ -93,6 +93,10 @@ class PlayerProgressServiceReport
         if ($level = $this->request->get('level')) {
             $query->whereIn('player_progress.level_id', (array)$level);
         }
+
+        if ($group = $this->request->get('group')) {
+            $query->where('players.group_id', $group);
+        }
     }
 
     /**
