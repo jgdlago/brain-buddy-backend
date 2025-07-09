@@ -12,6 +12,7 @@ use Laravel\Fortify\Http\Controllers\{
 use App\Http\Controllers\{ActivityAreaController,
     InstitutionController,
     GroupController,
+    LevelController,
     PlayerProgressController,
     UserController,
     PlayerController};
@@ -45,6 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('player', [PlayerController::class, 'list']);
         Route::get('user', [UserController::class, 'list']);
         Route::get('education-level', [GroupController::class, 'listEducationLevel']);
+        Route::get('level', [LevelController::class, 'list']);
     });
 
     Route::post('user/{user}/institutions', [UserController::class, 'addToInstitution']);

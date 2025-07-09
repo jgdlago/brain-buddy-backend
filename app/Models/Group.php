@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EducationLevelEnum;
 use App\Models\Concerns\GeneratesAccessGroupCode;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +20,10 @@ class Group extends Model
         'institution_id',
         'education_level',
         'access_code',
+    ];
+
+    protected $casts = [
+        'education_level' => EducationLevelEnum::class
     ];
 
     /**

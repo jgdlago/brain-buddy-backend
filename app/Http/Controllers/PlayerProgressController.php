@@ -33,6 +33,7 @@ class PlayerProgressController extends Controller
     #[QueryParameter('character', type: CharacterEnum::class)]
     #[QueryParameter('age_min', type: 'int')]
     #[QueryParameter('age_max', type: 'int')]
+    #[QueryParameter('level', type: 'int')]
     public function index(Request $request): Collection
     {
         return collect($this->playerProgressServiceReport->getGraphData($request));
@@ -50,6 +51,7 @@ class PlayerProgressController extends Controller
     #[QueryParameter('character', type: CharacterEnum::class)]
     #[QueryParameter('age_min', type: 'int')]
     #[QueryParameter('age_max', type: 'int')]
+    #[QueryParameter('level', type: 'int')]
     public function exportToExcel(Request $request): BinaryFileResponse
     {
         $reportService = new PlayerProgressServiceReport($request);
